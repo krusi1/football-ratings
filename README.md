@@ -13,6 +13,8 @@ A key challange is to measure underlying performance. I work with the now widely
 The ratings and xG data can be merged on season, round and team. As the two datasets come from different sources, team names are coded differently. Fortunatrely, we have only a handful of teams so it was easy to match their names manually (`team_names.csv`). 
 
 
+<details>
+<summary>Click to expand code</summary>
 
 ```python
 ### Import libraries
@@ -79,12 +81,18 @@ df['xg_diff_round'] = df['xg_diff'].round().astype(int)
 df['const'] = 1
 ```
 
+</details>
+
 ### Check the xG model
 
 Before looking at the relationship between ratings and xG, I show that actual scores are indeed centered around the xG values. I plot goals scoared against xG. The dot size indicates the number of observation for the given instances (I will use this throughout the entire exercise). We expect that the fitted line has zero intercept and slope of 1 which is exatcly what the get (see the regression output below).
 
 
+<details>
+<summary>Click to expand code</summary>
+
 ```python
+
 ### Score vs xg - figures
 
 msize=4
@@ -95,6 +103,8 @@ df_with_counts = pd.merge(df, df_counts, on=['xg', 'score'], how='inner')
 sns.regplot(x='xg', y='score', data=df_with_counts, ax=ax1, line_kws={'color': 'red'}, scatter_kws={'s': df_with_counts['count']*msize})
 
 ```
+
+</details>
 
 
 
@@ -108,7 +118,11 @@ sns.regplot(x='xg', y='score', data=df_with_counts, ax=ax1, line_kws={'color': '
 
 
 
+<details>
+<summary>Click to expand code</summary>
+
 ```python
+
 ### Score vs xg - regression
 
 model = sm.OLS(df['score'], df[['xg', 'const']])
@@ -123,6 +137,9 @@ results = summary_col(reg1, stars=True, float_format='%0.2f',
 print(results)
 
 ```
+
+</details>
+
 
     
     ======================
@@ -143,7 +160,11 @@ print(results)
     
 
 
+<details>
+<summary>Click to expand code</summary>
+
 ```python
+
 ### Ratings vs scores or xg - figures
 
 def ratings_scatter(xvar, msize=8, figheight=12, figwidth=18):
@@ -190,12 +211,19 @@ def ratings_scatter(xvar, msize=8, figheight=12, figwidth=18):
 
 ```
 
+</details>
+
+
 ## Ratings vs scores
 
 First, let's look at the relationship between ratings and scores. Avarege team rating is higher when the team scores more (top left) or concedes less (top right). These two effects are summarized in the bottom right figure where I plot goals scored and conceded together. Finally, we can aggregate them into a single measure, score difference (bottom left).   
 
 
+<details>
+<summary>Click to expand code</summary>
+
 ```python
+
 ### Ratings vs score - figures
 ratings_scatter(xvar='score')
 
@@ -204,6 +232,9 @@ ratings_scatter(xvar='score')
     c:\users\krusp\appdata\local\programs\python\python37\lib\site-packages\pandas\plotting\_matplotlib\tools.py:331: MatplotlibDeprecationWarning: 
     The is_first_col function was deprecated in Matplotlib 3.4 and will be removed two minor releases later. Use ax.get_subplotspec().is_first_col() instead.
       if ax.is_first_col():
+
+</details>
+
     
 
 
@@ -215,7 +246,11 @@ ratings_scatter(xvar='score')
 Now, let's see change actual scores to expected goals on the horizontal axes. We get similar pattarens: Avarege team rating is higher when the team creates more chances (top left) or denies opponents from creating chances (top right). The two effects are summarized in the bottom right figure where I plot xG and opponents's xG together. Finally, we can aggregate them into a single measure, xG difference (bottom left).
 
 
+<details>
+<summary>Click to expand code</summary>
+
 ```python
+
 ### Ratings vs xg - figures
 ratings_scatter(xvar='xg', msize=12)
 
@@ -224,7 +259,10 @@ ratings_scatter(xvar='xg', msize=12)
     c:\users\krusp\appdata\local\programs\python\python37\lib\site-packages\pandas\plotting\_matplotlib\tools.py:331: MatplotlibDeprecationWarning: 
     The is_first_col function was deprecated in Matplotlib 3.4 and will be removed two minor releases later. Use ax.get_subplotspec().is_first_col() instead.
       if ax.is_first_col():
-    
+
+</details>
+
+   
 
 
 ![png](output_9_1.png)
@@ -241,7 +279,11 @@ We can read the relative importance of actuals scores and xG if we move horizont
  - Similarly, we can compare games where the xG difference is the same but the score difference is larger by moving from bottom to top within a single column. For example, when the teams created similar amount of chances (rounded xG difference is 0) , moving from a 4 goal defeat to a 4 goal win increases the ratings significantly (from 3.5 to 5.4)
 
 
+<details>
+<summary>Click to expand code</summary>
+
 ```python
+
 ### Ratings vs score and xg - figures
 
 df_restricted = df[(abs(df['xg_diff'])<=4) & (abs(df['score_diff'])<=6)]
@@ -259,6 +301,9 @@ sns.heatmap(ratings, annot=True, cmap=plt.get_cmap('jet'), alpha=1, ax=ax)
 
     <AxesSubplot:xlabel='xg_diff_round', ylabel='score_diff'>
 
+</details>
+
+
 
 
 
@@ -274,7 +319,11 @@ I plot average ratings as a function of the score difference. To zoom in the nei
  - Then I repeated the same procedure for victories. Actual ratings are now lower than predicted, meaning that there is an extra premium for improving score difference by one when it turns a draw into a victory.
 
 
+<details>
+<summary>Click to expand code</summary>
+
 ```python
+
 ### Ratings vs score and win/loose
 
 cutoff = 4
@@ -316,6 +365,9 @@ ax.lines[3].set_linestyle("--")
 
 ```
 
+</details>
+
+
 
 ![png](output_13_0.png)
 
@@ -333,7 +385,11 @@ I run some simple regressions to quantify the effect of scores and xG on ratings
 To summarize, regression results confirm what we saw on the graphs, actual scores are more important than expected goals. 
 
 
+<details>
+<summary>Click to expand code</summary>
+
 ```python
+
 ### Ratings regressions
 
 model = sm.OLS(df['rating'], df[['score_diff', 'xg_diff', 'const']])
@@ -353,6 +409,9 @@ results = summary_col([reg1, reg2, reg3], stars=True, float_format='%0.2f',
 print(results)
 
 ```
+
+</details>
+
 
     
     ========================================
@@ -390,7 +449,11 @@ print(results)
 I estimate the regressions separately for each season and plot the coefficient estimates in the figure below. Dashed line represent coefficient estimates for the entire sample. There is not much going on, the coefficients are stable over time. This is somewhat surprising in light of the recent success of the xG metrics: it broke out from the circles of football analytics and became part of the mainstraim football media in recent years. At the same time, its influence on retings remained low compared to actual scores. 
 
 
+<details>
+<summary>Click to expand code</summary>
+
 ```python
+
 ### Ratings vs scores and xg over time
 
 # Estimate regressions by seasons
@@ -439,6 +502,9 @@ fig.legend(loc='lower center', ncol=len(xvars[1:]))
 
     <matplotlib.legend.Legend at 0x21be695ffd0>
 
+</details>
+
+
 
 
 
@@ -457,7 +523,11 @@ Finally, goalkeepers are a completely different story. Not surprisingly, attacki
 
 
 
+<details>
+<summary>Click to expand code</summary>
+
 ```python
+
 ### Estimate the effect of score and xg for different ratings
 
 yvars = ['rating', 'rating_start', 'rating_defence', 'rating_attack', 'rating_goalkepper']
@@ -506,6 +576,9 @@ fig.legend(loc='lower center', ncol=len(xvars[1:]))
 
     <matplotlib.legend.Legend at 0x21be6914160>
 
+</details>
+
+
 
 
 
@@ -514,5 +587,6 @@ fig.legend(loc='lower center', ncol=len(xvars[1:]))
 
 
 ```python
+
 
 ```
