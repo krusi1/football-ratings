@@ -104,12 +104,12 @@ sns.regplot(x='xg', y='score', data=df_with_counts, ax=ax1, line_kws={'color': '
 
 ```
 
-</details>
-
-
 
 
     <AxesSubplot:xlabel='xg', ylabel='score'>
+
+</details>
+
 
 
 
