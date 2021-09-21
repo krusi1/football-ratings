@@ -586,7 +586,3 @@ fig.legend(loc='lower center', ncol=len(xvars[1:]))
 
 
 
-```python
-
-
-```
