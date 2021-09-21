@@ -2,15 +2,15 @@
 
 ## Intro
 
-How people evalute others' performance when the output depends on luck as well? Football is an ideal setting to study this question because its low scoring nature introducies a lat of randomness into the final results: a team playing well means that they have a higher chance of winning but it does not guarantee a win at all. In this exercise I look at player ratings given by sport magazine journalists to disantangle the importance of actual scores and underlying performance in determining the evaluations.   
+How do people evaluate others' performance when the output depends on luck as well? Football is an ideal setting to study this question because its low scoring nature introduces  a lot of randomness into the final results: a team playing well means that they have a higher chance of winning but it does not guarantee a win at all. In this exercise I look at player ratings given by sport magazine journalists to disentangle the importance of actual scores and underlying performance in determining the evaluations.   
 
 ## Data
 
-Currently, I work with data from the Bundesliga. After each game, the sports magazine Kicker rates players on a 1 (best) to 7 (worst) scale. __[For example, Hoffenheim trashed Dortmund at the Signal-Iduna Park in the last round of the 2019-20 season.](https://www.kicker.de/dortmund-gegen-hoffenheim-2020-bundesliga-4588955/schema)__ Andrej Kramaric scored four goals and earned himself the top rating, while the home players received ratings closer to 5. Interestingly, Dortmund goalkeeper Roman Bürki received the best rating in the home team, Hoffenheim apparently had even more chances than the final score would suggest. I obtained the ratings data by scraping the Kicker website (`get_ratings.ipynb`). I transform the ratings to the reverse order (high values mean good performance, low values mean bad performance) beacuse I plan to add data from outher countries and this ordering is more common. 
+Currently, I work with data from the Bundesliga. After each game, the sports magazine Kicker rates players on a 1 (best) to 7 (worst) scale. __[For example, Hoffenheim trashed Dortmund at the Signal-Iduna Park in the last round of the 2019-20 season.](https://www.kicker.de/dortmund-gegen-hoffenheim-2020-bundesliga-4588955/schema)__ Andrej Kramaric scored four goals and earned himself the top rating, while the home players received ratings closer to 5. Interestingly, Dortmund goalkeeper Roman Bürki received the best rating in the home team, Hoffenheim apparently had even more chances than the final score would suggest. I obtained the ratings data by scraping the Kicker website (`get_ratings.ipynb`). I transform the ratings to the reverse order (high values mean good performance, low values mean bad performance) because I plan to add data from other countries and this ordering is more common. 
 
-A key challange is to measure underlying performance. I work with the now widely used expected goals (xG) metrics. In short, xG assigns a probability of scoring to each shot based on historical data. Current xG models take into account various features of the shot (distance from goal, angle, vertical ball position, goalkeeper's and defenders' position, whether it is a header or taken with strong or week foot, etc.). Then for each game, we can simply aggregate the xG values of the individual shots to get a sense of total chances created weighted by chance quality. Similarly, aggregating the xG values of the opponent's shots gives total chances conceded weighted by chance quality. __[I obtained xG data from FBref.com](https://fbref.com/en/comps/20/1634/schedule/2017-2018-Bundesliga-Scores-and-Fixtures)__  where they report values calculated by __[Statsbomb](https://statsbomb.com/)__ from the 2017-18 season (`get_xg.ipynb` collects season level data into one csv file). 
+A key challenge is to measure underlying performance. I work with the now widely used expected goals (xG) metrics. In short, xG assigns a probability of scoring to each shot based on historical data. Current xG models take into account various features of the shot (distance from goal, angle, vertical ball position, goalkeeper's and defenders' position, whether it is a header or taken with strong or week foot, etc.). Then for each game, we can simply aggregate the xG values of the individual shots to get a sense of total chances created weighted by chance quality. Similarly, aggregating the xG values of the opponent's shots gives total chances conceded weighted by chance quality. __[I obtained xG data from FBref.com](https://fbref.com/en/comps/20/1634/schedule/2017-2018-Bundesliga-Scores-and-Fixtures)__  where they report values calculated by __[Statsbomb](https://statsbomb.com/)__ from the 2017-18 season (`get_xg.ipynb` collects season level data into one csv file). 
 
-The ratings and xG data can be merged on season, round and team. As the two datasets come from different sources, team names are coded differently. Fortunatrely, we have only a handful of teams so it was easy to match their names manually (`team_names.csv`). 
+The ratings and xG data can be merged on season, round and team. As the two datasets come from different sources, team names are coded differently. Fortunately, we have only a handful of teams so it was easy to match their names manually (`team_names.csv`). 
 
 
 <details>
@@ -85,7 +85,7 @@ df['const'] = 1
 
 ### Check the xG model
 
-Before looking at the relationship between ratings and xG, I show that actual scores are indeed centered around the xG values. I plot goals scoared against xG. The dot size indicates the number of observation for the given instances (I will use this throughout the entire exercise). We expect that the fitted line has zero intercept and slope of 1 which is exatcly what the get (see the regression output below).
+Before looking at the relationship between ratings and xG, I show that actual scores are indeed centered around the xG values. I plot goals scored against xG. The dot size indicates the number of observation for the given instances (I will use this throughout the entire exercise). We expect that the fitted line has zero intercept and slope of 1 which is exactly what the get (see the regression output below).
 
 
 <details>
@@ -216,7 +216,7 @@ def ratings_scatter(xvar, msize=8, figheight=12, figwidth=18):
 
 ## Ratings vs scores
 
-First, let's look at the relationship between ratings and scores. Avarege team rating is higher when the team scores more (top left) or concedes less (top right). These two effects are summarized in the bottom right figure where I plot goals scored and conceded together. Finally, we can aggregate them into a single measure, score difference (bottom left).   
+First, let's look at the relationship between ratings and scores. Average team rating is higher when the team scores more (top left) or concedes less (top right). These two effects are summarized in the bottom right figure where I plot goals scored and conceded together. Finally, we can aggregate them into a single measure, score difference (bottom left).   
 
 
 <details>
@@ -243,7 +243,7 @@ ratings_scatter(xvar='score')
 
 ## Ratings vs xG
 
-Now, let's see change actual scores to expected goals on the horizontal axes. We get similar pattarens: Avarege team rating is higher when the team creates more chances (top left) or denies opponents from creating chances (top right). The two effects are summarized in the bottom right figure where I plot xG and opponents's xG together. Finally, we can aggregate them into a single measure, xG difference (bottom left).
+Now, let's change actual scores to expected goals on the horizontal axes. We get similar patterns: Average team rating is higher when the team creates more chances (top left) or denies opponents from creating chances (top right). The two effects are summarized in the bottom right figure where I plot xG and opponent's xG together. Finally, we can aggregate them into a single measure, xG difference (bottom left).
 
 
 <details>
@@ -270,13 +270,13 @@ ratings_scatter(xvar='xg', msize=12)
 
 ## Actual scores are more important than xG
 
-So far we have seen that both acutal scores and xG correlates positively with rankings. Now let's look at their effect simultaneously so we can judge which one is more important. To create a comprehensible figure, I make two adjustments to the data. First, I round xG difference to aggregate observations into fewer categories. Second, I drop outliers (games where the score difference is larger than 6 or the xG difference is larger than 4). 
+So far we have seen that both actual scores and xG correlates positively with rankings. Now let's look at their effect simultaneously so we can judge which one is more important. To create a comprehensible figure, I make two adjustments to the data. First, I round xG difference to aggregate observations into fewer categories. Second, I drop outliers (games where the score difference is larger than 6 or the xG difference is larger than 4). 
 
-The heatmap below indicates averege team ratings for each pair of score differences and rounded xG differences. As expected, we observe higher ratings in the top right corner (teams creating more chances and scoring  more goals relative to opponent) and lower ratings in the bottom left corner (teams creating less chnaces and scoring less goals relative to opponent).
+The heatmap below indicates average team ratings for each pair of score differences and rounded xG differences. As expected, we observe higher ratings in the top right corner (teams creating more chances and scoring more goals relative to opponent) and lower ratings in the bottom left corner (teams creating less chances and scoring less goals relative to opponent).
 
 We can read the relative importance of actuals scores and xG if we move horizontally or vertically on the figure. 
  - We can compare games where the result is the same but the xG difference is larger by moving from left to right within a single row. For example, when the result is a draw, moving from an xG difference from -4 to 4 increases the ratings only slightly (from 4.3 to 4.6). 
- - Similarly, we can compare games where the xG difference is the same but the score difference is larger by moving from bottom to top within a single column. For example, when the teams created similar amount of chances (rounded xG difference is 0) , moving from a 4 goal defeat to a 4 goal win increases the ratings significantly (from 3.5 to 5.4)
+ - Similarly, we can compare games where the xG difference is the same but the score difference is larger by moving from bottom to top within a single column. For example, when the teams created similar amount of chances (rounded xG difference is 0), moving from a 4 goal defeat to a 4 goal win increases the ratings significantly (from 3.5 to 5.4)
 
 
 <details>
@@ -310,12 +310,12 @@ sns.heatmap(ratings, annot=True, cmap=plt.get_cmap('jet'), alpha=1, ax=ax)
 ![png](output_11_1.png)
 
 
-## Win or loose
+## Win or lose
 
 Intuitively, the success of a team is not linear in the score difference: the value of an additional goal is larger when it makes the difference between a draw and a close win than when the team would have won the game anyway. Do ratings reflect this relationship? 
 
 I plot average ratings as a function of the score difference. To zoom in the neighborhood of draws I exclude games where the score difference is larger 4, the results are not sensitive to the sample restriction. 
- - First, I use data from defeats and predict ratings for the draws (indicated by the dashed line). We can see that actual ratings are higher, there is am extra premium for improving score difference by one when it turns a defeat into a draw.
+ - First, I use data from defeats and predict ratings for the draws (indicated by the dashed line). We can see that actual ratings are higher, there is an extra premium for improving score difference by one when it turns a defeat into a draw.
  - Then I repeated the same procedure for victories. Actual ratings are now lower than predicted, meaning that there is an extra premium for improving score difference by one when it turns a draw into a victory.
 
 
@@ -324,7 +324,7 @@ I plot average ratings as a function of the score difference. To zoom in the nei
 
 ```python
 
-### Ratings vs score and win/loose
+### Ratings vs score and win/lose
 
 cutoff = 4
 df2 = df.loc[abs(df['score_diff'])<=cutoff, ['rating', 'score_diff', 'const']]
@@ -378,9 +378,9 @@ I run some simple regressions to quantify the effect of scores and xG on ratings
 
  - Column 1 shows that actual scores are more important than expected goals. Increasing actual goal difference by 1 increases average ratings by 0.23 while increasing expected goal difference by 1 increases average ratings only by 0.04. 
 
- - Column 2 breaks down the effect of score difference to goals scored/conceded and the effect of xG difference to chances created/conceded. In terms of ratings, scoring an addititional goal is equivalent to conceding one goal less. Interestingly, this symmetry does not hold for xG: creating chances is rewarded while deniing chances from the opponent has no effect. 
+ - Column 2 breaks down the effect of score difference to goals scored/conceded and the effect of xG difference to chances created/conceded. In terms of ratings, scoring an additional goal is equivalent to conceding one goal less. Interestingly, this symmetry does not hold for xG: creating chances is rewarded while denying chances from the opponent has no effect. 
 
- - Column 3 adds a dummy for winning and loosing the game. The penalty for defeats is higher (0.10) than the reward for victories (0.05). The other coefficients are unchanged.  
+ - Column 3 adds a dummy for winning and losing the game. The penalty for defeats is higher (0.10) than the reward for victories (0.05). The other coefficients are unchanged.  
 
 To summarize, regression results confirm what we saw on the graphs, actual scores are more important than expected goals. 
 
@@ -446,7 +446,7 @@ print(results)
 
 ## The results are stable over time
 
-I estimate the regressions separately for each season and plot the coefficient estimates in the figure below. Dashed line represent coefficient estimates for the entire sample. There is not much going on, the coefficients are stable over time. This is somewhat surprising in light of the recent success of the xG metrics: it broke out from the circles of football analytics and became part of the mainstraim football media in recent years. At the same time, its influence on retings remained low compared to actual scores. 
+I estimate the regressions separately for each season and plot the coefficient estimates in the figure below. Dashed line represent coefficient estimates for the entire sample. There is not much going on, the coefficients are stable over time. This is somewhat surprising considering the recent success of the xG metrics: it broke out from the circles of football analytics and became part of the mainstream football media in recent years. At the same time, its influence on ratings remained low compared to actual scores. 
 
 
 <details>
@@ -513,13 +513,13 @@ fig.legend(loc='lower center', ncol=len(xvars[1:]))
 
 ## Goalkeepers, defenders, attackers
 
-Finally, I look at players in differnet positions. Again, I estimate the same regression but now I change the dependent variable. Specifically, I use average ratings for different sets of players: staring eleven, goalkeepers, defenders, attackers. I don't have data on player positions (yet), I use the order in which players appear in the Kicker website as a proxy (traditionally the lineup is listed from the back to forwards). I plot the coefficient estimates in the figure below (dashed line represent coefficients estimated for average team rating). 
+Finally, I look at players in different positions. Again, I estimate the same regression but now I change the dependent variable. Specifically, I use average ratings for different sets of players: staring eleven, goalkeepers, defenders, attackers. I don't have data on player positions (yet), I use the order in which players appear in the Kicker website as a proxy (traditionally the lineup is listed from the back to forwards). I plot the coefficient estimates in the figure below (dashed line represent coefficients estimated for average team rating). 
 
-Dropping the ratings of substitute players is more of a robustness check, it doesn't change the coefficients at all. It suggests that results are not affected by the fact that teams make substitutions differenetly based on the actual stading of the game.
+Dropping the ratings of substitute players is more of a robustness check, it doesn't change the coefficients at all. It suggests that results are not affected by the fact that teams make substitutions differently based on the actual standing of the game.
 
 Now let's look at defenders and attackers. On the first hand, the previous finding holds, actual scores are more important than xG for both defenders and attackers. On the other hand, goals and chances conceded have a larger effect on defenders while goals scored and chances created have a larger effect on attackers. 
 
-Finally, goalkeepers are a completely different story. Not surprisingly, attacking performance has no effect and they are punished for letting in goals. Chances created by the opponents has a positive coeffeicient, goalkeppers are rewarded when they concede the same number of goals from more chances created by the opponent. Defenders are rewarded for preventing opponents from making shots, while goalkeppers are rewarded for saving the shots. Note that goalkeepers are the only players whose ratings depend equally on actual scores and expected goals. 
+Finally, goalkeepers are a completely different story. Not surprisingly, attacking performance has no effect and they are punished for letting in goals. Chances created by the opponents has a positive coefficient, conceding the same number of goals from more chances created by the opponent earns higher ratings. While defenders are rewarded for preventing opponents from making shots, goalkeepers are rewarded for saving the shots. Note that goalkeepers are the only players whose ratings depend equally on actual scores and expected goals. 
 
 
 
