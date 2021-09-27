@@ -243,7 +243,7 @@ ratings_scatter(xvar='score')
 
 ## Ratings vs xG
 
-Now, let's change actual scores to expected goals on the horizontal axes. We get similar patterns: Average team rating is higher when the team creates more chances (top left) or denies opponents from creating chances (top right). The two effects are summarized in the bottom right figure where I plot xG and opponent's xG together. Finally, we can aggregate them into a single measure, xG difference (bottom left).
+Now, let's change actual scores to expected goals on the horizontal axes. We get similar patterns: average team rating is higher when the team creates more chances (top left) or denies opponents from creating chances (top right). The two effects are summarized in the bottom right figure where I plot xG and opponent's xG together. Finally, we can aggregate them into a single measure, xG difference (bottom left).
 
 
 <details>
@@ -270,7 +270,7 @@ ratings_scatter(xvar='xg', msize=12)
 
 ## Actual scores are more important than xG
 
-So far we have seen that both actual scores and xG correlates positively with rankings. Now let's look at their effect simultaneously so we can judge which one is more important. To create a comprehensible figure, I make two adjustments to the data. First, I round xG difference to aggregate observations into fewer categories. Second, I drop outliers (games where the score difference is larger than 6 or the xG difference is larger than 4). 
+So far we have seen that both actual scores and xG correlate positively with rankings. Now let's look at their effect simultaneously so we can judge which one is more important. To create a comprehensible figure, I make two adjustments to the data. First, I round xG difference to aggregate observations into fewer categories. Second, I drop outliers (games where the score difference is larger than 6 or the xG difference is larger than 4). 
 
 The heatmap below indicates average team ratings for each pair of score differences and rounded xG differences. As expected, we observe higher ratings in the top right corner (teams creating more chances and scoring more goals relative to opponent) and lower ratings in the bottom left corner (teams creating less chances and scoring less goals relative to opponent).
 
@@ -380,7 +380,7 @@ I run some simple regressions to quantify the effect of scores and xG on ratings
 
  - Column 2 breaks down the effect of score difference to goals scored/conceded and the effect of xG difference to chances created/conceded. In terms of ratings, scoring an additional goal is equivalent to conceding one goal less. Interestingly, this symmetry does not hold for xG: creating chances is rewarded while denying chances from the opponent has no effect. 
 
- - Column 3 adds a dummy for winning and losing the game. The penalty for defeats is higher (0.10) than the reward for victories (0.05). The other coefficients are unchanged.  
+ - Column 3 adds a dummy variables for winning and losing the game. The penalty for defeats is higher (0.10) than the reward for victories (0.05). The other coefficients are unchanged.  
 
 To summarize, regression results confirm what we saw on the graphs, actual scores are more important than expected goals. 
 
