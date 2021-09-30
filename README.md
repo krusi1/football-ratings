@@ -307,7 +307,7 @@ sns.heatmap(ratings, annot=True, cmap=plt.get_cmap('jet'), alpha=1, ax=ax)
 
 
 
-![png](output_11_1.png)
+![png](pics/output_11_1.png)
 
 
 ## Win or lose
