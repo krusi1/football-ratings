@@ -114,7 +114,7 @@ sns.regplot(x='xg', y='score', data=df_with_counts, ax=ax1, line_kws={'color': '
 
 
 
-![png](output_3_1.png)
+![png](pics/output_3_1.png)
 
 
 
@@ -238,7 +238,7 @@ ratings_scatter(xvar='score')
     
 
 
-![png](output_7_1.png)
+![png](pics/output_7_1.png)
 
 
 ## Ratings vs xG
@@ -265,7 +265,7 @@ ratings_scatter(xvar='xg', msize=12)
    
 
 
-![png](output_9_1.png)
+![png](pics/output_9_1.png)
 
 
 ## Actual scores are more important than xG
@@ -369,7 +369,7 @@ ax.lines[3].set_linestyle("--")
 
 
 
-![png](output_13_0.png)
+![png](pics/output_13_0.png)
 
 
 ## Regression analysis
@@ -508,7 +508,7 @@ fig.legend(loc='lower center', ncol=len(xvars[1:]))
 
 
 
-![png](output_17_1.png)
+![png](pics/output_17_1.png)
 
 
 ## Goalkeepers, defenders, attackers
@@ -582,7 +582,7 @@ fig.legend(loc='lower center', ncol=len(xvars[1:]))
 
 
 
-![png](output_19_1.png)
+![png](pics/output_19_1.png)
 
 
 
